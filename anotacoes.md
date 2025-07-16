@@ -1,93 +1,196 @@
-**CONCEITOS E DEFINIÇÕES**
-- *REGISTRO OU TUPLA:* é o conjunto formado por coluna e linha
-- *SELEÇÃO:* 
-- *PROJEÇÃO:* 
-- *JUNÇÃO:* 
-- *SGBD:* SISTEMA GERENCIADOR DE BANCO DE DADOS, SOFTWARE PARA GERENCIAMENTO
-- *CONSTRAINTS:* REGRAS APLICADAS A BASE DE DADOS COMO POR EXEMPLO *PRIMARY KEY*, *FOREIGN KEY* E *REFERENCES* GARANTINDO A INTEGRIDADE REFERENCIAL
-- *DELIMITADOR DE COMANDOS EM SQL:* ;  
-- *TIPOS DE DADOS:*
-  - *CHAR(n)* POSSUI TAMANHO FIXO, PERMITE UMA MELHOR EFICIÊNCIA AO BANCO PORÉM SE ATENTAR AO ESPAÇO NÃO UTILIZADO
-  - *VARCHAR(n)* POSSUI TAMANHO VARIÁVEL, MAIOR PROCESSAMENTO
-  - *ENUM*: tipo utilizado permitir o agrupamento ou limitação de dados a partir dos comandos GROUP BY e COUNT no SQLSERVER utilizar CONSTRAINTS
-  - *BLOB:* BINARY LARGE OBJECT, ARQUIVOS DE FOTOS, VÍDEOS, DOCUMENTOS, ETC.
-- *OLAP E OLTP:*
-- *AD/DBA, BI, DATA SCIENCE, TUNING:*
-- *CHAVE NATURAL E ARTIFICIAL:*
-- *CHAVE PRIMÁRIA:* COLUNA DE IDENTIFICAÇÃO ÚNICA DE CADA REGISTRO
-- *CHAVE ESTRANGEIRA:* COLUNA QUE REPRESENTA RELAÇÃO ENTRE REGISTROS DE DIFERENTES TABELAS
-- *FUNÇÕES DE AGRUPAMENTO:*
-- *FUNCTIONS:* BLOCO DE PROGRAMAÇÃO NO BANCO DE DADOS
-- *PROCEDURES:* BLOCO DE PROGRAMAÇÃO NO BANCO DE DADOS
-- *VIEW:* PONTEIRO PARA UMA CONSULTA(QUERY)
-- *STORED PROCEDURE:* BLOCO DE INSTRUÇÕES NOMEADO QUE PODE RECEBER PARÂMETROS E SERVE PARA DIMINUIR O PROCESSAMENTO NA APLICAÇÃO
-- *SQL STRUCTURED QUERY LANGUAGE* LINGUAGEM DE 4 GERAÇÃO UTILIZADA PARA CONSULTAS E MANIPULAÇÃO DE BASE DE DADOS
-  
-**MODELAGEM DE BANCO DE DADOS** CRIADA A PARTIR DO DOCUMENTO DE REQUISITOS PARA DEFINIÇÃO DO BANCO DE DADOS
-- TIPOS:
-*CONCEITUAL:* RASCUNHO NOTEPAD
-*LÓGICA:* WORKBENCH ESQUEMÁTICO
-*FÍSICA:* SCRIPTS DE BANCO
+# 📘 Estudo de SQL e SQL Server
 
-**PRIMEIRA FORMA NORMAL**
-- TODO CAMPO VETORIZADO SE TORNARÁ OUTRA TABELA
-- TODO CAMPO MULTIVALORADO SE TORNARÁ OUTRA TABELA QUANDO O CAMPO FOR DIVISÍVEL
-- TODA TABELA NECESSITA DE PELO MENOS UM CAMPO QUE IDENTIFIQUE UM REGISTRO COMO ÚNICO: ID OU CHAVE PRIMÁRIA
+---
 
-**TUNING**
-- SE ATENTAR AO TUNING DA TABELA DE FORMA A ESCOLHER OS MELHORES TIPOS DE DADOS E ASSIM GARANTIR UMA MELHOR PERFORMANCE DE BUSCA E GERENCIAMENTO DA BASE
-- NÃO REALIZAR CONSULTAS COM AGRUPAMENTO NO BANCO DE PRODUÇÃO DURANTE HORÁRIO DE PICO DEVIDO AO BLOQUEIO CAUSADO PELA EXECUÇÃO DO COMANDO
-- *EVITAR* A UTILIZAÇÃO DA BUSCA 'SELECT * FROM TABELA' DEVIDO AO BLOQUEIO CAUSADO NO BANCO E A QUANTIDADE DE DADOS TRAFEGADOS NA REDE, BUSCAR SEMPRE FILTRAR NO LADO DO BANCO PARA EVITAR PROCESSAMENTOS NO LADO DO CLIENTE
-- INICIAR COMPARAÇÃO PELO PARÂMETRO DE MAIOR OCORRÊNCIA (VALOR_1 OU VALOR_2 - SE  VALOR_1 É MAIS RECORRENTE ENTÃO NÃO SERÁ NECESSÁRIO VERIFICAR O SEGUNDO PARÂMETRO)
-- utilizar tipos numéricos(INT, FLOAT) somente para colunas onde serão realizados cálculos
-- ESCOLHER O TIPO CORRETO DE UM DADO PERMITE A BASE DE DADOS SER MAIS LEVE E RÁPIDA
+## 📚 Conceitos Gerais de SQL
 
-**FUNÇÕES DE AGRUPAMENTO**
-SUM(), AVG(), ETC. : UTILIZAR COM *GROUP BY* PARA AGRUPAR RESULTADOS EM COLUNAS POR EXEMPLO TOTAL RECEITAS NOS MESES, MÉDIA DE VENDAS NOS ANOS
+### 🔸 Conceitos Fundamentais
 
-**UPDATE**
-- NUNCA EXECUTAR *UPDATE* SEM *WHERE* E *SELECT*
-- ANTES DE EXECUTAR A INSTRUÇÃO EM GRANDES BASES DE DADOS, CRIAR UM BACKUP E SE POSSÍVEL TESTAR EM AMBIENTE DE APROPRIADO
+* **Registro (ou Tupla):** Conjunto de dados em uma linha da tabela.
+* **Campo (ou Atributo):** Coluna da tabela.
+* **SGBD (Sistema Gerenciador de Banco de Dados):** Software que permite gerenciar bancos de dados (ex: SQL Server, MySQL, PostgreSQL etc).
+* **SQL (Structured Query Language):** Linguagem de quarta geração usada para gerenciamento e consulta de dados.
+* **Delimitador de comandos:** `;`
 
-**CHAVE ESTRANGEIRA**
-- EM RELACIONAMENTO 1x1 A FK(FOREIGN KEY) FICA NA TABELA MAIS FRACA
+### 🔸 Operações básicas
 
-**OBRIGATORIEDADE E CARDINALIDADE (0|1,1|n)**
-- A OBRIGATORIEDADE É CONTROLADA PELA CAMADA DE SOFTWARE ENQUANTO A CARDINALIDADE É CONTROLADA PELO BANCO
-- O PRIMEIRO VALOR REPRESENTA OBRIGATORIEDADE 0 OU 1
-- O SEGUNDO VALOR REPRESENTA A QUANTIDADE
-  
-**OPERADORES DE COMPARAÇÃO**
-- = IGUAL A
-- <> OU != DIFERENTE DE
-- > MAIOR QUE
-- < MENOR QUE
-- >= MAIOR OU IGUAL A
-- <= MENOR OU IGUAL A
+* **Seleção:** Filtragem com `WHERE`, resultando em subconjuntos dos dados.
+* **Projeção:** Seleção de colunas com `SELECT`.
+* **Junção (JOIN):** Combinação de tabelas relacionadas por chaves.
 
-----------------------------------------------------------------------
-**TEORIA DOS CONJUNTOS**
+### 🔸 Linguagens SQL
 
-**PROJEÇÃO(SELECT), SELEÇÃO(WHERE,LIKE) E JUNÇÃO(JOIN)**
-- *PROJEÇÃO* O QUE DEVE SER EXIBIDO NA TELA. PROJETAR, CONSTRUIR, DADOS QUE SERÃO EXIBIDOS, COMANDO 'SELECT' E SUAS COLUNAS
-    - EXEMPLO: *SELECT COLUNA_ID AS ID, NOW() AS DATA_ATUAL FROM TABELA;*
-- *SELEÇÃO* FILTRAR BASE DE DADOS TRAZENDO APENAS DETERMINADA SELEÇÃO. É UM SUBCONJUNTO DOS DADOS DE DETERMINADAS TABELAS OBTIDO A PARTIR DA CLÁSULA *WHERE*
-    - EXEMPLO: *WHERE COLUNA_ID = 1 AND NOME = 'NOME EXEMPLO'*
+* **DML (Data Manipulation Language):** `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+* **DDL (Data Definition Language):** `CREATE`, `ALTER`, `DROP`
+* **DCL (Data Control Language):** `GRANT`, `REVOKE`
+* **TCL (Transaction Control Language):** `BEGIN`, `COMMIT`, `ROLLBACK`, `SAVEPOINT`
 
-**COMANDOS DML(DATA MANIPULATION LANGUAGE)**
-- MANIPULAÇÃO DOS DADOS
-- *INSERT*, *UPDATE*, *DELETE*, *SELECT*
+---
 
-**COMANDOS DDL(DATA DEFINITION LANGUAGE)**
-- TIPAGEM DOS DADOS
-- *CREATE TABLE*, *ALTER TABLE*
+## 🧱 Modelagem de Banco de Dados
 
-**COMANDOS DCL(DATA CONTROL LANGUAGE)**
-- ACESSO AOS DADOS
+### 🔹 Tipos de Modelagem
 
-**COMANDOS TCL(TRANSACTION CONTROL LANGUAGE)**
-- ATOMICIDADE DO BANCO
+* **Conceitual:** Diagrama de alto nível (ex: ER).
+* **Lógica:** Esquema detalhado com chaves, tipos, relacionamentos.
+* **Física:** Script real que será executado no SGBD.
 
-**DICAS**
-- PARA REALIZAR UMA GRANDE QUERY, EXECUTAR O COMANDO *DESC* EM TODAS AS TABELAS QUE SERÃO UTILIZADAS DE FORMA A EXIBIR AS COLUNAS E FACILITAR NO HORA DE CONSTRUIR A INSTRUÇÃO
-- CRIAR CONSTRAINTS SEPARADAS DA CRIAÇÃO DA TABELA PARA QUE SEJA POSSÍVEL NOMEÁ-LAS E GARANTIR UM MELHOR GERENCIAMENTO DA BASE DE DADOS
+### 🔹 Chaves
+
+* **Chave Primária:** Identificador único de um registro.
+* **Chave Estrangeira (FK):** Estabelece relação entre tabelas.
+* **Chave Natural:** Já existe no mundo real (ex: CPF).
+* **Chave Artificial:** Criada para ser chave (ex: ID incremental).
+
+---
+
+## 🧪 Formas Normais (Normalização de Dados)
+
+A normalização é um processo que organiza os dados no banco para reduzir redundância e melhorar a integridade. As três primeiras formas normais são as mais usadas:
+
+### **1ª Forma Normal (1NF)** – Eliminar dados repetidos e campos compostos
+
+Uma tabela está na 1ª forma normal quando:
+
+* Cada campo contém **apenas um valor atômico** (não dividido ou agrupado).
+* **Não há colunas multivaloradas** (ex: telefones separados por vírgula).
+* Todos os registros têm a **mesma estrutura de colunas**.
+
+✅ **Exemplo errado:**
+
+| ID | Nome  | Telefones          |
+| -- | ----- | ------------------ |
+| 1  | Maria | (11)1111, (11)2222 |
+
+✅ **Forma correta (tabela separada):**
+
+| ID | Nome  |
+| -- | ----- |
+| 1  | Maria |
+
+| ID\_Usuario | Telefone |
+| ----------- | -------- |
+| 1           | (11)1111 |
+| 1           | (11)2222 |
+
+---
+
+### **2ª Forma Normal (2NF)** – Eliminar dependências parciais
+
+Uma tabela está na 2NF quando:
+
+* Está **na 1NF**.
+* **Todos os campos não-chave dependem de toda a chave primária**, e não apenas de parte dela (em chaves compostas).
+
+✅ Exemplo típico:
+
+* Se você tem uma tabela com chave composta (por exemplo: `AlunoID`, `CursoID`) e um campo como `NomeAluno`, este campo depende **somente de AlunoID**, não do par inteiro — então deve estar em outra tabela.
+
+---
+
+### **3ª Forma Normal (3NF)** – Eliminar dependências transitivas
+
+Uma tabela está na 3NF quando:
+
+* Está **na 2NF**.
+* **Nenhum campo não-chave depende de outro campo não-chave**.
+
+✅ Exemplo errado:
+
+| ID | Nome | CEP       | Cidade   |
+| -- | ---- | --------- | -------- |
+| 1  | João | 18000-000 | Sorocaba |
+
+`Cidade` depende de `CEP`, não de `ID`. A solução é criar uma tabela para endereços com relação por CEP.
+
+---
+
+## ⚙️ Comandos e Boas Práticas
+
+### 🔹 UPDATE
+
+* Nunca executar `UPDATE` sem `WHERE` e sem testar com `SELECT`.
+* Ideal: testar em ambiente seguro e/ou com backup.
+
+### 🔹 Funções de Agrupamento
+
+* `SUM()`, `AVG()`, `COUNT()`, `MIN()`, `MAX()` — geralmente usados com `GROUP BY`.
+
+### 🔹 Operadores de Comparação
+
+| Operador | Descrição      |
+| -------- | -------------- |
+| =        | Igual          |
+| <> ou != | Diferente      |
+| >        | Maior que      |
+| <        | Menor que      |
+| >=       | Maior ou igual |
+| <=       | Menor ou igual |
+
+---
+
+## 📊 OLTP x OLAP
+
+| OLTP (Transacional)        | OLAP (Analítico)    |
+| -------------------------- | ------------------- |
+| Muitas transações pequenas | Consultas complexas |
+| Normalização               | Desnormalização     |
+| Foco em integridade        | Foco em performance |
+
+---
+
+## 🔧 Tuning e Performance
+
+* Evite `SELECT *` — escolha somente os campos necessários.
+* Prefira filtrar no banco, não na aplicação.
+* Use tipos de dados apropriados: `INT` para cálculos, `CHAR` para dados fixos etc.
+* Evite `GROUP BY` ou `ORDER BY` em produção durante horários de pico.
+* Teste índices e particionamento quando necessário.
+* Priorize condições mais seletivas nos `WHERE`.
+
+---
+
+## 🧩 Teoria dos Conjuntos
+
+Base para operações como `UNION`, `INTERSECT`, `EXCEPT`:
+
+* **UNION:** União de dois conjuntos (sem duplicatas).
+* **INTERSECT:** Interseção (o que existe em ambos).
+* **EXCEPT:** Diferença (o que existe em um e não no outro).
+
+---
+
+## 🧰 Variáveis e Programação no Banco
+
+* **Procedures:** Blocos nomeados que podem receber parâmetros e executar múltiplas instruções.
+* **Functions:** Retornam valores e podem ser usadas dentro de consultas.
+* **Views:** Consultas armazenadas que podem ser tratadas como tabelas.
+* **Constraints:** Regras de integridade: `PRIMARY KEY`, `FOREIGN KEY`, `UNIQUE`, `CHECK`, `NOT NULL`.
+* **Triggers:** Blocos de código que são executados automaticamente em resposta a eventos como `INSERT`, `UPDATE` ou `DELETE` em uma tabela. Usados para automatizar validações, atualizações em cascata, logs de auditoria, entre outros.
+
+---
+
+## 📌 Específico do SQL Server
+
+### 🔹 Arquivos
+
+* **.MDF (Master Database File):** Arquivo principal do banco.
+* **.LDF (Log Database File):** Arquivo de log de transações.
+
+### 🔹 Comandos e Características
+
+* Interface gráfica (SSMS) baseada em queries, mas facilita a administração visualmente.
+* Uso frequente de **Stored Procedures** como alternativa a comandos simples (`SHOW TABLES`, etc.).
+* Utilização de tipos como `VARCHAR(MAX)` e `NVARCHAR` para Unicode.
+* `ENUM` não existe diretamente — pode ser simulado com `CHECK` ou tabela relacionada.
+
+---
+
+## ✅ Dicas e Práticas Úteis
+
+* Use `DESC [tabela]` (ou `sp_help [tabela]` no SQL Server) para consultar colunas.
+* Crie `CONSTRAINTS` separadamente para poder nomeá-las manualmente.
+* Em relacionamento 1:1, a FK fica na tabela "mais fraca".
+* O primeiro número na notação (0..1, 1..n) representa obrigatoriedade (controlada pela aplicação), e o segundo representa a cardinalidade (controlada no banco).
+* Use variáveis locais (`DECLARE`) e globais (`@@`) conforme o contexto.
+
